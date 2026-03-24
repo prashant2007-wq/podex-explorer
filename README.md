@@ -207,7 +207,7 @@ pokedex-explorer/
 ## 👤 Author
 
 **Your Name**
-- GitHub: [@your_username](https://github.com/prashant2007-wq)
+- GitHub: [PRASHNAT S BISHT](https://github.com/prashant2007-wq)
 
 ---
 
