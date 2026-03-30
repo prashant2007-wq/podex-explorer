@@ -181,7 +181,7 @@ pokedex-explorer/
 | Milestone | Description | Deadline | Status |
 |-----------|-------------|----------|--------|
 | **Milestone 1** | Project setup, repo creation, README | 23rd March | ✅ Done |
-| **Milestone 2** | API integration, display data, responsive UI | 1st April | 🔄 In Progress |
+| **Milestone 2** | API integration, display data, responsive UI | 1st April | ✅ Done |
 | **Milestone 3** | Search, filter, sort, dark mode, favorites | 8th April | ⏳ Upcoming |
 | **Milestone 4** | Deployment, final documentation, cleanup | 10th April | ⏳ Upcoming |
 

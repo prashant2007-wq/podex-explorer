@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokédex Explorer</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Pokédex Explorer</h1>
+      <p>Browse the first 151 Pokémon</p>
+    </header>
+    <main>
+      <section>
+        <div id="loading" class="loading" hidden>
+          <p>Loading Pokémon...</p>
+        </div>
+        <div id="error" class="error" hidden></div>
+        <div id="pokemon-grid" class="grid"></div>
+      </section>
+      <section id="details" class="details">
+        <h2>Pokémon Details</h2>
+        <p id="details-empty">Click a Pokémon card to see details.</p>
+        <div id="details-body" hidden>
+          <h3 id="details-name"></h3>
+          <p id="details-id"></p>
+          <img id="details-img" alt="" />
+          <p><strong>Types:</strong> <span id="details-types"></span></p>
+          <p><strong>Abilities:</strong> <span id="details-abilities"></span></p>
+          <h4>Base Stats</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Stat</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody id="details-stats-body"></tbody>
+          </table>
+          <h4>Description</h4>
+          <p id="details-description"></p>
+        </div>
+      </section>
+    </main>
+    <script src="api.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
+
