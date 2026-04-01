@@ -1,79 +1,86 @@
-const LIMIT = 151;
-const CONCURRENCY = 12; // Keep requests reasonable while loading 151 Pokémon.
+var LIMIT=151;
+var CONCURRENCY=12;
 
-function $id(id) {
+function $id(id){
   return document.getElementById(id);
 }
 
-function capitalize(s) {
-  if (!s) return "";
-  return s.slice(0, 1).toUpperCase() + s.slice(1);
+function capitalize(s){
+  if(!s){
+    return "";
+  }
+  return s[0].toUpperCase()+s.slice(1);
 }
 
-function typeBadges(types) {
-  return types.map((t) => capitalize(t)).join(", ");
-}
-
-function formatPokeId(id) {
-  var s = String(id);
-  while (s.length < 3) s = "0" + s;
+function typeBadges(types){
+  var s="";
+  for(var i=0;i<types.length;i++){
+    if(i>0){
+      s+=", ";
+    }
+    s+=capitalize(types[i]);
+  }
   return s;
 }
 
-function renderPokemonCard(pokemon, onClick) {
-  // pokemon is the details payload from /pokemon/{id}
-  const id = pokemon.id;
-  const name = pokemon.name;
+function formatPokeId(id){
+  var s=String(id);
+  while(s.length<3){
+    s="0"+s;
+  }
+  return s;
+}
 
-  var types = [];
-  if (pokemon.types && pokemon.types.length) {
-    for (var i = 0; i < pokemon.types.length && types.length < 2; i++) {
-      var typeObj = pokemon.types[i].type;
-      if (typeObj && typeObj.name) types.push(typeObj.name);
+function renderPokemonCard(pokemon,onClick){
+  var id=pokemon.id;
+  var name=pokemon.name;
+  var types=[];
+
+  if(pokemon.types){
+    for(var i=0;i<pokemon.types.length&&types.length<2;i++){
+      if(pokemon.types[i].type&&pokemon.types[i].type.name){
+        types.push(pokemon.types[i].type.name);
+      }
     }
   }
 
-  const card = document.createElement("article");
-  card.className = "card";
-  card.setAttribute("aria-label", "Open details for " + name);
-  card.setAttribute("role", "button");
-  card.setAttribute("tabindex", "0");
+  var card=document.createElement("article");
+  card.className="card";
+  card.setAttribute("aria-label","Open details for "+name);
+  card.setAttribute("role","button");
+  card.setAttribute("tabindex","0");
 
-  card.addEventListener("click", function () {
+  card.addEventListener("click",function(){
     onClick(pokemon);
   });
 
-  const idEl = document.createElement("div");
-  idEl.className = "pokemon-id";
-  idEl.textContent = "#" + formatPokeId(id);
+  var idEl=document.createElement("div");
+  idEl.className="pokemon-id";
+  idEl.textContent="#"+formatPokeId(id);
 
-  const nameEl = document.createElement("h3");
-  nameEl.className = "pokemon-name";
-  nameEl.textContent = capitalize(name);
+  var nameEl=document.createElement("h3");
+  nameEl.className="pokemon-name";
+  nameEl.textContent=capitalize(name);
 
-  const imgWrap = document.createElement("div");
-  const img = document.createElement("img");
-  img.alt = name;
+  var imgWrap=document.createElement("div");
+  var img=document.createElement("img");
+  img.alt=name;
 
-  var frontDefault = "";
-  if (pokemon.sprites) {
-    if (
-      pokemon.sprites.other &&
-      pokemon.sprites.other["official-artwork"] &&
-      pokemon.sprites.other["official-artwork"].front_default
-    ) {
-      frontDefault = pokemon.sprites.other["official-artwork"].front_default;
-    } else if (pokemon.sprites.front_default) {
-      frontDefault = pokemon.sprites.front_default;
+  var pic="";
+  if(pokemon.sprites){
+    if(pokemon.sprites.other&&pokemon.sprites.other["official-artwork"]&&pokemon.sprites.other["official-artwork"].front_default){
+      pic=pokemon.sprites.other["official-artwork"].front_default;
+    }else if(pokemon.sprites.front_default){
+      pic=pokemon.sprites.front_default;
     }
   }
-  img.src = frontDefault;
 
+  img.src=pic;
   imgWrap.appendChild(img);
 
-  const typesEl = document.createElement("p");
-  typesEl.className = "pokemon-types";
-  typesEl.textContent = "Types: " + typeBadges(types);
+  var typesEl=document.createElement("p");
+  typesEl.className="pokemon-types";
+  typesEl.textContent="Types: "+typeBadges(types);
 
   card.appendChild(idEl);
   card.appendChild(nameEl);
@@ -83,152 +90,192 @@ function renderPokemonCard(pokemon, onClick) {
   return card;
 }
 
-async function populateDescriptionForId(id) {
-  try {
-    const species = await window.api.fetchPokemonSpeciesById(id);
-    const text = window.api.extractEnglishFlavorText(species);
-    $id("details-description").textContent = text ? text : "No description available.";
-  } catch {
-    $id("details-description").textContent = "Failed to load description.";
+async function populateDescriptionForId(id){
+  try{
+    var species=await window.api.fetchPokemonSpeciesById(id);
+    var text=window.api.extractEnglishFlavorText(species);
+
+    if(text){
+      $id("details-description").textContent=text;
+    }else{
+      $id("details-description").textContent="No description available.";
+    }
+  }catch(e){
+    $id("details-description").textContent="Failed to load description.";
   }
 }
 
-function showBaseStats(details) {
-  const wanted = ["hp", "attack", "defense", "speed"];
-  const stats = details.stats || [];
-  const body = $id("details-stats-body");
-  body.innerHTML = "";
+function showBaseStats(details){
+  var wanted=["hp","attack","defense","speed"];
+  var stats=details.stats||[];
+  var body=$id("details-stats-body");
+  body.innerHTML="";
 
-  for (const key of wanted) {
-    const stat = stats.find((s) => s.stat && s.stat.name === key);
-    const tr = document.createElement("tr");
+  for(var i=0;i<wanted.length;i++){
+    var key=wanted[i];
+    var value="-";
 
-    const tdStat = document.createElement("td");
-    tdStat.textContent = key.toUpperCase();
+    for(var j=0;j<stats.length;j++){
+      if(stats[j].stat&&stats[j].stat.name===key){
+        value=stats[j].base_stat;
+        break;
+      }
+    }
 
-    const tdValue = document.createElement("td");
-    tdValue.textContent = stat && typeof stat.base_stat === "number" ? stat.base_stat : "-";
+    var tr=document.createElement("tr");
+    var td1=document.createElement("td");
+    td1.textContent=key.toUpperCase();
 
-    tr.appendChild(tdStat);
-    tr.appendChild(tdValue);
+    var td2=document.createElement("td");
+    td2.textContent=value;
+
+    tr.appendChild(td1);
+    tr.appendChild(td2);
     body.appendChild(tr);
   }
 }
 
-async function openDetails(pokemon) {
-  const id = pokemon.id;
-  const name = pokemon.name;
-  var types = [];
-  if (pokemon.types && pokemon.types.length) {
-    for (var i = 0; i < pokemon.types.length; i++) {
-      var typeObj = pokemon.types[i].type;
-      if (typeObj && typeObj.name) types.push(typeObj.name);
+async function openDetails(pokemon){
+  var id=pokemon.id;
+  var name=pokemon.name;
+  var types=[];
+  var abilities=[];
+
+  if(pokemon.types){
+    for(var i=0;i<pokemon.types.length;i++){
+      if(pokemon.types[i].type&&pokemon.types[i].type.name){
+        types.push(pokemon.types[i].type.name);
+      }
     }
   }
 
-  var abilities = [];
-  if (pokemon.abilities && pokemon.abilities.length) {
-    for (var j = 0; j < pokemon.abilities.length; j++) {
-      var abilityObj = pokemon.abilities[j].ability;
-      if (abilityObj && abilityObj.name) abilities.push(abilityObj.name);
+  if(pokemon.abilities){
+    for(var j=0;j<pokemon.abilities.length;j++){
+      if(pokemon.abilities[j].ability&&pokemon.abilities[j].ability.name){
+        abilities.push(pokemon.abilities[j].ability.name);
+      }
     }
   }
 
-  $id("details-name").textContent = capitalize(name);
-  $id("details-id").textContent = "#" + formatPokeId(id);
+  $id("details-name").textContent=capitalize(name);
+  $id("details-id").textContent="#"+formatPokeId(id);
 
-  var frontDefault = "";
-  if (pokemon.sprites) {
-    if (
-      pokemon.sprites.other &&
-      pokemon.sprites.other["official-artwork"] &&
-      pokemon.sprites.other["official-artwork"].front_default
-    ) {
-      frontDefault = pokemon.sprites.other["official-artwork"].front_default;
-    } else if (pokemon.sprites.front_default) {
-      frontDefault = pokemon.sprites.front_default;
+  var pic="";
+  if(pokemon.sprites){
+    if(pokemon.sprites.other&&pokemon.sprites.other["official-artwork"]&&pokemon.sprites.other["official-artwork"].front_default){
+      pic=pokemon.sprites.other["official-artwork"].front_default;
+    }else if(pokemon.sprites.front_default){
+      pic=pokemon.sprites.front_default;
     }
   }
-  $id("details-img").src = frontDefault;
-  $id("details-img").alt = name;
 
-  $id("details-types").textContent = types.length ? typeBadges(types) : "-";
-  $id("details-abilities").textContent = abilities.length ? abilities.map(capitalize).join(", ") : "-";
+  $id("details-img").src=pic;
+  $id("details-img").alt=name;
+
+  if(types.length>0){
+    $id("details-types").textContent=typeBadges(types);
+  }else{
+    $id("details-types").textContent="-";
+  }
+
+  if(abilities.length>0){
+    var s="";
+    for(var k=0;k<abilities.length;k++){
+      if(k>0){
+        s+=", ";
+      }
+      s+=capitalize(abilities[k]);
+    }
+    $id("details-abilities").textContent=s;
+  }else{
+    $id("details-abilities").textContent="-";
+  }
 
   showBaseStats(pokemon);
 
-  $id("details-description").textContent = "Loading description...";
+  $id("details-description").textContent="Loading description...";
   $id("details-body").removeAttribute("hidden");
-  $id("details-empty").setAttribute("hidden", "");
+  $id("details-empty").setAttribute("hidden","");
 
   await populateDescriptionForId(id);
 }
 
-async function loadPokemon() {
-  const grid = $id("pokemon-grid");
-  const loading = $id("loading");
-  const error = $id("error");
+async function loadPokemon(){
+  var grid=$id("pokemon-grid");
+  var loading=$id("loading");
+  var error=$id("error");
 
   loading.removeAttribute("hidden");
-  error.setAttribute("hidden", "");
-  grid.innerHTML = "";
+  error.setAttribute("hidden","");
+  grid.innerHTML="";
 
-  const list = await window.api.fetchPokemonList(LIMIT);
-  const ids = list
-    .map((p) => window.api.getIdFromPokemonUrl(p.url))
-    .filter((n) => Number.isFinite(n))
-    .slice(0, LIMIT);
+  try{
+    var list=await window.api.fetchPokemonList(LIMIT);
+    var ids=[];
 
-  const detailsById = new Map();
-  let index = 0;
-
-  async function worker() {
-    while (index < ids.length) {
-      const myIndex = index++;
-      const id = ids[myIndex];
-      const details = await window.api.fetchPokemonDetailsById(id);
-      detailsById.set(id, details);
+    for(var i=0;i<list.length;i++){
+      var id=window.api.getIdFromPokemonUrl(list[i].url);
+      if(!isNaN(id)){
+        ids.push(id);
+      }
     }
-  }
 
-  async function runWorkers() {
-    const workers = [];
-    const count = Math.min(CONCURRENCY, ids.length);
-    for (let i = 0; i < count; i++) workers.push(worker());
+    if(ids.length>LIMIT){
+      ids=ids.slice(0,LIMIT);
+    }
+
+    var detailsById={};
+    var index=0;
+
+    async function worker(){
+      while(index<ids.length){
+        var myIndex=index;
+        index++;
+
+        var id=ids[myIndex];
+        var details=await window.api.fetchPokemonDetailsById(id);
+        detailsById[id]=details;
+      }
+    }
+
+    var workers=[];
+    var count=CONCURRENCY;
+    if(count>ids.length){
+      count=ids.length;
+    }
+
+    for(var j=0;j<count;j++){
+      workers.push(worker());
+    }
+
     await Promise.all(workers);
-  }
 
-  return { ids, detailsById, runWorkers };
+    ids.sort(function(a,b){
+      return a-b;
+    });
+
+    for(var k=0;k<ids.length;k++){
+      var details=detailsById[ids[k]];
+      if(details){
+        grid.appendChild(renderPokemonCard(details,openDetails));
+      }
+    }
+
+    loading.setAttribute("hidden","");
+  }catch(e){
+    loading.setAttribute("hidden","");
+    error.removeAttribute("hidden");
+
+    var msg="";
+    if(e&&e.message){
+      msg=" ("+e.message+")";
+    }
+
+    error.textContent="Failed to load Pokédex."+msg;
+    grid.innerHTML="";
+  }
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  const grid = $id("pokemon-grid");
-  const loading = $id("loading");
-  const error = $id("error");
-
-  // Start load
-  try {
-    const { ids, detailsById, runWorkers } = await loadPokemon();
-    await runWorkers();
-
-    // Render after all data is loaded so the grid is stable by ID.
-    ids.sort(function (a, b) {
-      return a - b;
-    });
-    for (const id of ids) {
-      const details = detailsById.get(id);
-      if (details) grid.appendChild(renderPokemonCard(details, openDetails));
-    }
-
-    loading.setAttribute("hidden", "");
-  } catch (e) {
-    loading.setAttribute("hidden", "");
-    error.removeAttribute("hidden");
-    var msg = "";
-    if (e && e.message) msg = "(" + e.message + ")";
-    error.textContent = "Failed to load Pokédex. " + msg;
-    // Keep grid empty; user can refresh.
-    grid.innerHTML = "";
-  }
+document.addEventListener("DOMContentLoaded",function(){
+  loadPokemon();
 });
-

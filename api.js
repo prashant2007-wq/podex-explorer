@@ -1,49 +1,88 @@
 const POKEAPI_BASE = "https://pokeapi.co/api/v2";
+
 function getIdFromPokemonUrl(url) {
-  // Example: https://pokeapi.co/api/v2/pokemon/25/
-  const parts = url.split("/").filter(Boolean);
-  return Number(parts[parts.length - 1]);
+  const parts = url.split("/");
+  return Number(parts[parts.length - 2]);
 }
+
 async function fetchJson(url) {
-  const res = await fetch(url);
-  if (!res.ok) 
-    {
-    throw new Error(`Request failed (${res.status}) for ${url}`);
+  try {
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error("Request failed");
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (e) {
+    throw e;
   }
-  return res.json();
 }
-async function fetchPokemonList(limit=151) 
-{
-  const url = `${POKEAPI_BASE}/pokemon?limit=${limit}`;
-  const data=await fetchJson(url);
-  return data.results ||[];
+
+async function fetchPokemonList(limit = 151) {
+  try {
+    const url = POKEAPI_BASE + "/pokemon?limit=" + limit;
+    const data = await fetchJson(url);
+
+    if (data.results) {
+      return data.results;
+    }
+
+    return [];
+  } catch (e) {
+    throw e;
+  }
 }
+
 async function fetchPokemonDetailsById(id) {
-  return fetchJson(`${POKEAPI_BASE}/pokemon/${id}`);
+  try {
+    const url = POKEAPI_BASE + "/pokemon/" + id;
+    const data = await fetchJson(url);
+    return data;
+  } catch (e) {
+    throw e;
+  }
 }
 
 async function fetchPokemonSpeciesById(id) {
-  return fetchJson(`${POKEAPI_BASE}/pokemon-species/${id}`);
+  try {
+    const url = POKEAPI_BASE + "/pokemon-species/" + id;
+    const data = await fetchJson(url);
+    return data;
+  } catch (e) {
+    throw e;
+  }
 }
 
-function extractEnglishFlavorText(speciesData) 
-{
-  var entries = [];
+function extractEnglishFlavorText(speciesData) {
+  let entries = [];
+  let text = "";
+
   if (speciesData && speciesData.flavor_text_entries) {
     entries = speciesData.flavor_text_entries;
   }
 
-  var text = "";
-  for (var i = 0; i < entries.length; i++) {
-    var e = entries[i];
-    if (e && e.language && e.language.name === "en" && e.flavor_text) {
-      text = e.flavor_text;
+  for (let i = 0; i < entries.length; i++) {
+    if (
+      entries[i] &&
+      entries[i].language &&
+      entries[i].language.name === "en" &&
+      entries[i].flavor_text
+    ) {
+      text = entries[i].flavor_text;
       break;
     }
   }
 
-  if (!text) return "";
-  return text.replace(/\s+/g, " ").trim();
+  if (text === "") {
+    return "";
+  }
+
+  text = text.replace(/\s+/g, " ");
+  text = text.trim();
+
+  return text;
 }
 
 window.api = {
@@ -53,4 +92,3 @@ window.api = {
   getIdFromPokemonUrl,
   extractEnglishFlavorText,
 };
-
