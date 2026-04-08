@@ -53,7 +53,6 @@ This project was built as part of a JavaScript + API Integration course, demonst
 ```
 GET https://pokeapi.co/api/v2/pokemon?limit=151       → Fetch first 151 Pokémon
 GET https://pokeapi.co/api/v2/pokemon/{id}            → Fetch individual Pokémon details
-GET https://pokeapi.co/api/v2/type                    → Fetch all Pokémon types
 GET https://pokeapi.co/api/v2/pokemon-species/{id}    → Fetch species/flavor text
 ```
 
@@ -62,44 +61,35 @@ GET https://pokeapi.co/api/v2/pokemon-species/{id}    → Fetch species/flavor t
 ## ✨ Features
 
 ### 🔍 Search
-- Real-time search by Pokémon name
-- Debounced input to avoid excessive API calls (300ms delay)
-- Implemented using `.filter()` HOF on the fetched data array
+- Search Pokémon in the Explore tab by `name` or `ID`
 
 ### 🎨 Filter
-- Filter Pokémon by type (Fire, Water, Grass, Electric, Psychic, etc.)
-- Multi-type support (each Pokémon can have up to 2 types)
-- Implemented using `.filter()` HOF
+- Filter Pokémon by type using the "Filter Type" dropdown
+- Dropdown is hidden by default and appears on hover
 
 ### 📊 Sort
-- Sort by: Pokémon ID (default), Name (A–Z / Z–A), Base HP, Base Attack
-- Toggle ascending / descending order
-- Implemented using `.sort()` HOF
+- Sort by: Pokémon ID and Name (A–Z / Z–A)
 
 ### ❤️ Favorites
-- Like / unlike any Pokémon with a heart button
+- Like/unlike Pokémon
 - Favorites persist across sessions using `localStorage`
-- View a dedicated "Favorites" tab
+- Dedicated Favorites tab
 
 ### 🌙 Dark / Light Mode
 - Toggle between dark and light themes
-- Preference saved in `localStorage`
+- Theme preference saved in `localStorage`
 
 ### 📋 Pokémon Detail Modal
-- Click any card to open a detailed modal
-- Shows: sprite, types, base stats (HP, Attack, Defense, Speed), abilities, and Pokédex description
-
-### 📄 Pagination
-- 20 Pokémon per page
-- Previous / Next navigation buttons
+- Hover a card to open the details panel
+- Shows: sprite, types, base stats (HP, Attack, Defense, Speed), abilities, and a Pokédex description
+- Includes robust fallback messaging if a species description is unavailable
 
 ### ⏳ Loading State
-- Animated spinner shown while data is being fetched
-- Skeleton card placeholders during initial load
+- Basic loading indicator while Pokémon data is being fetched
 
 ### 📱 Responsive Design
 - Fully responsive across mobile, tablet, and desktop
-- CSS Grid with auto-fill columns adapts to screen size
+- Responsive grid/card layout
 
 ---
 
@@ -123,24 +113,18 @@ GET https://pokeapi.co/api/v2/pokemon-species/{id}    → Fetch species/flavor t
 ```
 pokedex-explorer/
 │
-├── index.html          # Home — main Pokédex grid (search, filter, sort)
-├── compare.html        # Compare 2 Pokémon side by side
-├── quiz.html           # Guess the Pokémon game
-├── types.html          # Browse Pokémon by type
-├── favorites.html      # Saved/liked Pokémon
-├── about.html          # About the project
+├── index.html
+├── style.css                       # Legacy root stylesheet (kept for compatibility)
+├── app.js                          # Legacy app file (kept for compatibility)
+├── api.js                          # Legacy API file (kept for compatibility)
 │
-├── style.css           # Global styles + dark mode
-├── compare.css         # Styles specific to compare page
-├── quiz.css            # Styles specific to quiz page
-│
-├── app.js              # Home page logic (API, render, pagination)
-├── compare.js          # Compare page logic
-├── quiz.js             # Quiz game logic
-├── types.js            # Types page logic
-├── favorites.js        # Favorites logic (localStorage)
-├── filter.js           # Search, filter, sort HOFs (shared)
-├── api.js              # All fetch/API calls in one place (shared)
+├── assets/
+│   ├── css/
+│   │   └── main.css                # Active stylesheet entrypoint
+│   └── js/
+│       ├── api.js                  # API layer
+│       ├── app-core.js             # State, helpers, filters, sorting, theme
+│       └── app-ui.js               # Rendering, modal, controls, app bootstrap
 │
 └── README.md
 ```
@@ -182,7 +166,7 @@ pokedex-explorer/
 |-----------|-------------|----------|--------|
 | **Milestone 1** | Project setup, repo creation, README | 23rd March | ✅ Done |
 | **Milestone 2** | API integration, display data, responsive UI | 1st April | ✅ Done |
-| **Milestone 3** | Search, filter, sort, dark mode, favorites | 8th April | ⏳ Upcoming |
+| **Milestone 3** | Search, filter, sort, dark mode, favorites | 8th April | ✅ Done |
 | **Milestone 4** | Deployment, final documentation, cleanup | 10th April | ⏳ Upcoming |
 
 ---
@@ -193,14 +177,16 @@ pokedex-explorer/
 |---------|-------------|--------|
 | **Debouncing** | Search input debounced at 300ms | 🔄 Planned |
 | **Pagination** | 20 Pokémon per page with navigation | 🔄 Planned |
-| **Loading Indicators** | Spinner + skeleton cards during fetch | 🔄 Planned |
-| **Local Storage** | Favorites and theme saved persistently | 🔄 Planned |
+| **Loading Indicators** | Basic loading indicator during fetch | ✅ Done |
+| **Local Storage** | Favorites and theme saved persistently | ✅ Done |
 
 ---
 
 ## 📸 Screenshots
 
-> Screenshots will be added after UI implementation in Milestone 2.
+- Home page with hero, type browsing, trending cards, and stats strip
+- Explore workflow with search, sort, and hover filter dropdown
+- Details modal with stats, abilities, and Pokédex description
 
 ---
 

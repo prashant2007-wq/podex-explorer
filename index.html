@@ -4,27 +4,205 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pokédex Explorer</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="assets/css/main.css" />
   </head>
   <body>
-    <header>
-      <h1>Pokédex Explorer</h1>
-      <p>Browse the first 151 Pokémon</p>
-    </header>
-    <main>
-      <section>
+
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-logo">
+          <h1>🔴 Pokédex Explorer</h1>
+        </div>
+        <div class="nav-menu">
+          <button class="nav-btn active" data-tab="home">Home</button>
+          <button class="nav-btn" data-tab="explore">Explore</button>
+          <button class="nav-btn" data-tab="favorites">Favorites</button>
+          <button class="nav-btn" data-tab="about">About</button>
+        </div>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode">🌙</button>
+      </div>
+    </nav>
+
+    <main class="main-container">
+
+      <section id="home-tab" class="tab-content active">
+
+        <div class="hero-section">
+          <div class="hero-content">
+            <h2>Catch, Search, and Discover</h2>
+            <h3>Every Pokémon in your hands</h3>
+            <p>Your stylish digital Pokédex with smart filters, favorites, and beautiful stats.</p>
+            <div class="hero-buttons">
+              <button class="cta-btn primary-btn" onclick="switchTab('explore')">Explore Pokédex</button>
+              <button class="cta-btn secondary-btn" onclick="switchTab('favorites')">View Favorites</button>
+            </div>
+          </div>
+          <div class="hero-featured">
+            <div id="featured-pokemon-card" class="featured-pokemon-card">
+              <img id="featured-pokemon-img" src="" alt="Featured Pokémon" />
+              <p id="featured-pokemon-name"></p>
+            </div>
+            <div class="type-badges-floating">
+              <div class="type-badge fire">Fire</div>
+              <div class="type-badge water">Water</div>
+              <div class="type-badge grass">Grass</div>
+              <div class="type-badge electric">Electric</div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="controls home-explore-controls">
+          <div class="control-group search-group">
+            <input
+              type="text"
+              id="search-input"
+              class="search-box"
+              placeholder="Search Pokémon by name, ID, or type..."
+            />
+          </div>
+          <div class="control-group">
+            <select id="sort-select" class="sort-select">
+              <option value="id-asc">Sort By (1-151)</option>
+              <option value="id-desc">Sort By (151-1)</option>
+              <option value="name-asc">Sort: Name (A-Z)</option>
+              <option value="name-desc">Sort: Name (Z-A)</option>
+            </select>
+          </div>
+          <div class="control-group filter-dropdown-group">
+            <button id="filter-toggle" class="filter-btn">Filter Type</button>
+            <div id="type-filter" class="type-filter">
+              <button class="type-btn" data-type="all">All Types</button>
+            </div>
+          </div>
+          <div class="control-group">
+            <button id="reset-filters" class="filter-btn">Reset Filters</button>
+          </div>
+        </div>
+
+
+        <div class="categories-section">
+          <h3>Browse by Type &gt;</h3>
+          <div class="categories-grid">
+            <div class="category-card" onclick="filterByCategory('starter')">
+              <div class="category-icon">🔥</div>
+              <h4>Starters</h4>
+              <p>Begin your journey</p>
+            </div>
+            <div class="category-card" onclick="filterByCategory('legendary')">
+              <div class="category-icon">👑</div>
+              <h4>Legendary</h4>
+              <p>Rare & Powerful</p>
+            </div>
+            <div class="category-card" onclick="filterByCategory('fire')">
+              <div class="category-icon">🌡️</div>
+              <h4>Fire Type</h4>
+              <p>Hot & Fierce</p>
+            </div>
+            <div class="category-card" onclick="filterByCategory('water')">
+              <div class="category-icon">💧</div>
+              <h4>Water Type</h4>
+              <p>Cool & Smooth</p>
+            </div>
+            <div class="category-card" onclick="filterByCategory('grass')">
+              <div class="category-icon">🌿</div>
+              <h4>Grass Type</h4>
+              <p>Nature's Power</p>
+            </div>
+            <div class="category-card" onclick="filterByCategory('electric')">
+              <div class="category-icon">⚡</div>
+              <h4>Electric Type</h4>
+              <p>Speed & Power</p>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="featured-section">
+          <div class="trending-header-row">
+            <h3>Trending Now &gt;</h3>
+            <button class="view-all-btn" onclick="switchTab('explore')">View All</button>
+          </div>
+          <div id="featured-pokemon-grid" class="trending-grid"></div>
+        </div>
+
+        <div class="stats-section">
+          <div class="stat-card">
+            <div class="stat-number" id="stat-pokemon">151+</div>
+            <div class="stat-label">Pokémon</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="stat-types">18</div>
+            <div class="stat-label">Types</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">Faster</div>
+            <div class="stat-label">Fast Search</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">Fast</div>
+            <div class="stat-label">Search Experience</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="stat-favorites">0</div>
+            <div class="stat-label">Favorites Saved</div>
+          </div>
+        </div>
+      </section>
+
+
+      <section id="explore-tab" class="tab-content">
         <div id="loading" class="loading" hidden>
           <p>Loading Pokémon...</p>
         </div>
         <div id="error" class="error" hidden></div>
+        <div id="no-results" class="no-results" hidden>
+          <p>No Pokémon found matching your search criteria.</p>
+        </div>
         <div id="pokemon-grid" class="grid"></div>
       </section>
-      <section id="details" class="details">
-        <h2>Pokémon Details</h2>
-        <p id="details-empty">Click a Pokémon card to see details.</p>
-        <div id="details-body" hidden>
-          <h3 id="details-name"></h3>
-          <p id="details-id"></p>
+
+
+      <section id="favorites-tab" class="tab-content">
+        <div class="favorites-header">
+          <h2>Your Favorites</h2>
+          <p id="favorites-count-text">You have 0 Pokémon in your favorites</p>
+        </div>
+        <div id="favorites-grid" class="grid"></div>
+      </section>
+
+
+      <section id="about-tab" class="tab-content">
+        <div class="about-content">
+          <h2>About Pokédex Explorer</h2>
+          <p>Pokédex Explorer is a modern browsing application featuring the original 151 Pokémon from Generation I.</p>
+          <h3>Features:</h3>
+          <ul>
+            <li>Search Pokémon by name or ID</li>
+            <li>Filter by type (18 different types)</li>
+            <li>Sort results using multiple options</li>
+            <li>Save Pokémon to a favorites list</li>
+            <li>Toggle between dark and light themes</li>
+            <li>Responsive layout for all screen sizes</li>
+          </ul>
+          <h3>Data Source:</h3>
+          <p>All Pokémon data is fetched from the <a href="https://pokeapi.co/" target="_blank">PokéAPI</a>, a free and open-source Pokémon API.</p>
+        </div>
+      </section>
+    </main>
+
+
+    <div id="details-modal" class="details-modal" hidden>
+      <div class="details-content">
+        <button id="close-details" class="close-details">✕</button>
+        <div id="details-body">
+          <div class="details-header">
+            <div>
+              <h3 id="details-name"></h3>
+              <p id="details-id"></p>
+            </div>
+            <button id="details-favorite-btn" class="favorite-icon-btn">♡</button>
+          </div>
           <img id="details-img" alt="" />
           <p><strong>Types:</strong> <span id="details-types"></span></p>
           <p><strong>Abilities:</strong> <span id="details-abilities"></span></p>
@@ -41,10 +219,41 @@
           <h4>Description</h4>
           <p id="details-description"></p>
         </div>
-      </section>
-    </main>
-    <script src="api.js"></script>
-    <script src="app.js"></script>
+      </div>
+    </div>
+
+
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>🔴 Pokédex Explorer</h4>
+          <p>Your stylish digital Pokédex with smart filters, favorites, and beautiful stats.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#" onclick="switchTab('home'); return false;">Home</a></li>
+            <li><a href="#" onclick="switchTab('explore'); return false;">Explore</a></li>
+            <li><a href="#" onclick="switchTab('favorites'); return false;">Favorites</a></li>
+            <li><a href="#" onclick="switchTab('about'); return false;">About</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Data Source</h4>
+          <p>Powered by <a href="https://pokeapi.co/" target="_blank">PokéAPI</a> - Free & Open Source</p>
+        </div>
+        <div class="footer-section">
+          <h4>Credits</h4>
+          <p>Pokémon © 1995-2024 The Pokémon Company</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 Pokédex Explorer. Made with ❤️</p>
+      </div>
+    </footer>
+
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/app-core.js"></script>
+    <script src="assets/js/app-ui.js"></script>
   </body>
 </html>
-
