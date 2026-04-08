@@ -41,11 +41,6 @@ function switchTab(tabName) {
     tab.classList.remove("active");
   });
 
-  if (tabName === "explore") {
-    var homeTab = document.getElementById("home-tab");
-    if (homeTab) homeTab.classList.add("active");
-  }
-
   var selectedTab = document.getElementById(tabName + "-tab");
   if (selectedTab) {
     selectedTab.classList.add("active");
@@ -61,23 +56,35 @@ function switchTab(tabName) {
   }
 }
 
+function scrollToAllPokemon() {
+  var anchor = $id("all-pokemon-anchor");
+  if (!anchor) return;
+  anchor.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function toggleTheme() {
-  document.body.classList.toggle("light-mode");
-  localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark");
+  document.body.classList.toggle("dark-mode");
+  localStorage.setItem("theme", document.body.classList.contains("dark-mode") ? "dark" : "light");
   updateThemeToggleText();
 }
 
 function updateThemeToggleText() {
   var btn = $id("theme-toggle");
   if (!btn) return;
-  btn.textContent = document.body.classList.contains("light-mode") ? "🌙" : "☀️";
+  btn.textContent = document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
 }
 
 function initializeTheme() {
   var savedTheme = localStorage.getItem("theme");
-  if (savedTheme === "light") {
-    document.body.classList.add("light-mode");
+  var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  var shouldUseDark = savedTheme === "dark" || (!savedTheme && prefersDark);
+
+  if (shouldUseDark) {
+    document.body.classList.add("dark-mode");
+  } else {
+    document.body.classList.remove("dark-mode");
   }
+
   updateThemeToggleText();
 }
 

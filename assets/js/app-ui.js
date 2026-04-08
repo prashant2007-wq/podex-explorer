@@ -18,8 +18,11 @@ function renderPokemonCard(pokemon, onClick) {
   card.setAttribute("tabindex", "0");
 
   card.addEventListener("click", function() {
-    onClick(pokemon);
-    showDetailsModal(pokemon);
+    if (typeof onClick === "function") {
+      onClick(pokemon);
+    } else {
+      showDetailsModal(pokemon);
+    }
   });
 
   var favBtn = document.createElement("button");
@@ -64,10 +67,35 @@ function renderPokemonCard(pokemon, onClick) {
   typesEl.className = "pokemon-types";
   typesEl.textContent = "Types: " + typeBadges(types);
 
+  var stats = pokemon.stats || [];
+  var hpStat = stats.find(function(s) {
+    return s.stat && s.stat.name === "hp";
+  });
+  var atkStat = stats.find(function(s) {
+    return s.stat && s.stat.name === "attack";
+  });
+
+  var abilities = [];
+  if (pokemon.abilities) {
+    pokemon.abilities.slice(0, 2).forEach(function(abilityObj) {
+      if (abilityObj.ability && abilityObj.ability.name) {
+        abilities.push(capitalize(abilityObj.ability.name));
+      }
+    });
+  }
+
+  var hoverDetails = document.createElement("div");
+  hoverDetails.className = "card-hover-details";
+  hoverDetails.innerHTML =
+    "<p><strong>HP:</strong> " + (hpStat ? hpStat.base_stat : "-") + "</p>" +
+    "<p><strong>ATK:</strong> " + (atkStat ? atkStat.base_stat : "-") + "</p>" +
+    "<p><strong>Abilities:</strong> " + (abilities.length ? abilities.join(", ") : "-") + "</p>";
+
   card.appendChild(idEl);
   card.appendChild(nameEl);
   card.appendChild(imgWrap);
   card.appendChild(typesEl);
+  card.appendChild(hoverDetails);
 
   return card;
 }
@@ -381,6 +409,7 @@ async function loadPokemon() {
     renderFiltered();
     displayFeaturedPokemon();
     renderFeaturedPokemon();
+    renderLegendarySpotlight();
     updateStats();
 
     loading.setAttribute("hidden", "");
@@ -430,7 +459,7 @@ function filterByCategory(category) {
     var grid = $id("pokemon-grid");
     grid.innerHTML = "";
     filtered.forEach(function(pokemon) {
-      grid.appendChild(renderPokemonCard(pokemon));
+      grid.appendChild(renderPokemonCard(pokemon, openDetails));
     });
   }
 
@@ -439,11 +468,6 @@ function filterByCategory(category) {
 
 function renderFeaturedPokemon() {
   if (allPokemon.length === 0) return;
-
-  var grid = $id("featured-pokemon-grid");
-  if (!grid) return;
-
-  grid.innerHTML = "";
 
   var count = Math.min(5, allPokemon.length);
   var indices = [];
@@ -454,9 +478,31 @@ function renderFeaturedPokemon() {
     }
   }
 
-  indices.forEach(function(idx) {
-    var pokemon = allPokemon[idx];
-    grid.appendChild(renderPokemonCard(pokemon));
+  var targetGrids = ["featured-pokemon-grid", "explore-trending-grid"];
+  targetGrids.forEach(function(gridId) {
+    var grid = $id(gridId);
+    if (!grid) return;
+    grid.innerHTML = "";
+
+    indices.forEach(function(idx) {
+      var pokemon = allPokemon[idx];
+      grid.appendChild(renderPokemonCard(pokemon, openDetails));
+    });
+  });
+}
+
+function renderLegendarySpotlight() {
+  var grid = $id("legendary-spotlight-grid");
+  if (!grid) return;
+  grid.innerHTML = "";
+
+  var legendaryShowcaseIds = [144, 145, 146, 149];
+  var spotlightPokemon = allPokemon.filter(function(pokemon) {
+    return legendaryShowcaseIds.indexOf(pokemon.id) !== -1;
+  });
+
+  spotlightPokemon.forEach(function(pokemon) {
+    grid.appendChild(renderPokemonCard(pokemon, openDetails));
   });
 }
 
@@ -484,21 +530,34 @@ function updateStats() {
   if (favCount) {
     favCount.textContent = favorites.length;
   }
+  var exploreFavCount = $id("explore-stat-favorites");
+  if (exploreFavCount) {
+    exploreFavCount.textContent = favorites.length;
+  }
 
   var pokemonCount = $id("stat-pokemon");
   if (pokemonCount) {
     pokemonCount.textContent = allPokemon.length + "+";
   }
+  var explorePokemonCount = $id("explore-stat-pokemon");
+  if (explorePokemonCount) {
+    explorePokemonCount.textContent = allPokemon.length + "+";
+  }
+
+  var types = new Set();
+  allPokemon.forEach(function(p) {
+    p.types.forEach(function(t) {
+      types.add(t.type.name);
+    });
+  });
 
   var typeCount = $id("stat-types");
   if (typeCount) {
-    var types = new Set();
-    allPokemon.forEach(function(p) {
-      p.types.forEach(function(t) {
-        types.add(t.type.name);
-      });
-    });
     typeCount.textContent = types.size;
+  }
+  var exploreTypeCount = $id("explore-stat-types");
+  if (exploreTypeCount) {
+    exploreTypeCount.textContent = types.size;
   }
 }
 

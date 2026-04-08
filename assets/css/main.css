@@ -1,4 +1,6 @@
 :root {
+  --container-max: 1100px;
+  --container-pad: 1rem;
   --bg: #f6f8fb;
   --surface: #ffffff;
   --surface-2: #f1f5f9;
@@ -9,6 +11,18 @@
   --primary-soft: #dbeafe;
   --danger: #dc2626;
   --radius: 12px;
+}
+
+body.dark-mode {
+  --bg: #0b1220;
+  --surface: #111827;
+  --surface-2: #1f2937;
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+  --border: #334155;
+  --primary: #60a5fa;
+  --primary-soft: #1e3a8a;
+  --danger: #f87171;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -23,14 +37,14 @@ body {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(255, 255, 255, 0.95);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(6px);
 }
 .nav-container {
-  max-width: 1100px;
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding: 0.9rem 1rem;
+  padding: 0.9rem var(--container-pad);
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -55,7 +69,11 @@ body {
   display: grid; place-items: center; cursor: pointer;
 }
 
-.main-container { max-width: 1100px; margin: 0 auto; padding: 1.25rem 1rem 2rem; }
+.main-container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 1.25rem var(--container-pad) 2rem;
+}
 .tab-content { display: none; }
 .tab-content.active { display: block; }
 
@@ -83,7 +101,7 @@ body {
   font-weight: 600;
 }
 .primary-btn { background: var(--primary); color: #fff; border-color: var(--primary); }
-.secondary-btn { background: #fff; color: var(--text); }
+.secondary-btn { background: var(--surface); color: var(--text); }
 
 .hero-featured { display: grid; place-items: center; position: relative; min-height: 250px; }
 .featured-pokemon-card { text-align: center; }
@@ -98,7 +116,7 @@ body {
   width: 100%;
   height: 42px;
   border: 1px solid var(--border);
-  background: #fff;
+  background: var(--surface);
   border-radius: 10px;
   color: var(--text);
   padding: 0 0.8rem;
@@ -133,7 +151,7 @@ body {
 }
 .type-btn {
   border: 1px solid var(--border);
-  background: #fff;
+  background: var(--surface);
   color: var(--muted);
   border-radius: 999px;
   padding: 0.38rem 0.65rem;
@@ -159,7 +177,7 @@ body {
 .trending-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
 .view-all-btn {
   border: 1px solid var(--border);
-  background: #fff;
+  background: var(--surface);
   border-radius: 9px;
   height: 36px;
   padding: 0 0.8rem;
@@ -179,6 +197,51 @@ body {
 .stat-number { font-weight: 800; font-size: 1.1rem; }
 .stat-label { color: var(--muted); font-size: 0.8rem; margin-top: 0.2rem; }
 
+.journey-section {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+.journey-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 1rem;
+}
+.journey-card h4 { margin-bottom: 0.35rem; font-size: 1.05rem; }
+.journey-card p { color: var(--muted); }
+.journey-tags { margin-top: 0.7rem; display: flex; gap: 0.45rem; flex-wrap: wrap; }
+.journey-tags span {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  padding: 0.25rem 0.55rem;
+}
+.visual-card { position: relative; overflow: hidden; }
+.visual-orbs { margin-top: 0.75rem; display: flex; gap: 0.5rem; }
+.orb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.2);
+}
+.orb-blue { background: linear-gradient(135deg, #38bdf8, #2563eb); }
+.orb-green { background: linear-gradient(135deg, #4ade80, #16a34a); }
+.orb-yellow { background: linear-gradient(135deg, #facc15, #f59e0b); }
+
+.explore-highlights {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.legendary-section .grid {
+  margin-top: 0.3rem;
+}
+
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.8rem; margin-top: 0.8rem; }
 .card {
   border: 1px solid var(--border);
@@ -187,6 +250,11 @@ body {
   padding: 0.9rem;
   position: relative;
   cursor: pointer;
+  overflow: hidden;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
 }
 .card-favorite {
   position: absolute;
@@ -196,12 +264,36 @@ body {
   border: 1px solid var(--border);
   border-radius: 50%;
   display: grid; place-items: center;
-  background: #fff;
+  background: var(--surface);
 }
 .card-favorite.favorited { color: var(--danger); border-color: #fecaca; }
 .pokemon-id, .pokemon-types { color: var(--muted); font-size: 0.84rem; }
 .pokemon-name { text-align: center; margin: 0.3rem 0; font-size: 1rem; }
 .card img { width: 110px; height: 110px; display: block; margin: 0.4rem auto; object-fit: contain; }
+
+.card-hover-details {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: color-mix(in srgb, var(--surface) 90%, var(--bg));
+  border-top: 1px solid var(--border);
+  padding: 0.5rem 0.65rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+  transform: translateY(105%);
+  transition: transform 0.18s ease;
+}
+.card-hover-details p {
+  margin: 0.12rem 0;
+}
+.card-hover-details strong {
+  color: var(--text);
+}
+.card:hover .card-hover-details,
+.card:focus-within .card-hover-details {
+  transform: translateY(0);
+}
 
 .details-modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 60; }
 .details-modal.active { display: flex; }
@@ -217,13 +309,13 @@ body {
 }
 .close-details {
   position: absolute; right: 10px; top: 10px;
-  border: 1px solid var(--border); background: #fff; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface); border-radius: 8px;
   width: 34px; height: 34px; cursor: pointer;
 }
 .details-header { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-start; }
 #details-name { font-size: 1.5rem; }
 #details-id, #details-description { color: var(--muted); }
-.favorite-icon-btn { border: 1px solid var(--border); background: #fff; width: 44px; height: 44px; border-radius: 50%; cursor: pointer; font-size: 1.4rem; }
+.favorite-icon-btn { border: 1px solid var(--border); background: var(--surface); width: 44px; height: 44px; border-radius: 50%; cursor: pointer; font-size: 1.4rem; }
 .favorite-icon-btn.favorited { color: var(--danger); border-color: #fecaca; }
 #details-img { width: 140px; height: 140px; display: block; margin: 0.7rem auto; object-fit: contain; }
 table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
@@ -233,22 +325,47 @@ th { background: var(--surface-2); }
 .favorites-header, .about-content { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; }
 .favorites-header p, .about-content p, .about-content li { color: var(--muted); }
 
+.about-content {
+  max-width: 100%;
+  margin: 0 auto;
+}
+.about-content h2,
+.about-content h3 {
+  line-height: 1.25;
+}
+.about-content h3 {
+  margin-top: 0.85rem;
+  margin-bottom: 0.35rem;
+}
+.about-content p {
+  margin-bottom: 0.45rem;
+}
+.about-content ul {
+  margin: 0.35rem 0 0.7rem 1.1rem;
+  padding: 0;
+}
+.about-content li {
+  margin: 0.2rem 0;
+}
+
 .footer {
   margin-top: 1.5rem;
   border-top: 1px solid var(--border);
-  background: #fff;
+  background: var(--surface);
 }
 .footer-content {
-  max-width: 1100px;
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding: 1rem;
+  padding: 1rem var(--container-pad);
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
+  align-items: start;
 }
 .footer-section h4 { margin-bottom: 0.4rem; }
 .footer-section p, .footer-section a { color: var(--muted); font-size: 0.9rem; text-decoration: none; }
 .footer-section ul { list-style: none; }
+.footer-section li { margin-bottom: 0.18rem; }
 .footer-bottom { border-top: 1px solid var(--border); color: var(--muted); text-align: center; padding: 0.7rem; }
 
 .loading, .error, .no-results { text-align: center; padding: 1rem; border-radius: 10px; }
@@ -260,6 +377,7 @@ th { background: var(--surface-2); }
   .controls { grid-template-columns: 1fr; }
   .categories-grid { grid-template-columns: repeat(2, 1fr); }
   .stats-section { grid-template-columns: repeat(2, 1fr); }
+  .journey-section { grid-template-columns: 1fr; }
   .footer-content { grid-template-columns: 1fr 1fr; }
 }
 

@@ -148,10 +148,71 @@
             <div class="stat-label">Favorites Saved</div>
           </div>
         </div>
+
+        <div class="journey-section">
+          <div class="journey-card">
+            <h4>Region Journey</h4>
+            <p>Track your favorite Kanto discoveries and build your personal collection as you explore.</p>
+            <div class="journey-tags">
+              <span>151 Classic Pokémon</span>
+              <span>Fast Filters</span>
+              <span>Beautiful Cards</span>
+            </div>
+          </div>
+          <div class="journey-card visual-card">
+            <h4>Battle Ready Insights</h4>
+            <p>Compare types, scan base stats, and quickly open details to find the perfect team.</p>
+            <div class="visual-orbs">
+              <span class="orb orb-blue"></span>
+              <span class="orb orb-green"></span>
+              <span class="orb orb-yellow"></span>
+            </div>
+          </div>
+        </div>
       </section>
 
 
       <section id="explore-tab" class="tab-content">
+        <div class="explore-highlights">
+          <div class="featured-section">
+            <div class="trending-header-row">
+              <h3>Trending Now &gt;</h3>
+              <button class="view-all-btn" onclick="scrollToAllPokemon()">View All</button>
+            </div>
+            <div id="explore-trending-grid" class="trending-grid"></div>
+          </div>
+
+          <div class="stats-section">
+            <div class="stat-card">
+              <div class="stat-number" id="explore-stat-pokemon">151+</div>
+              <div class="stat-label">Pokémon</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="explore-stat-types">18</div>
+              <div class="stat-label">Types</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">Faster</div>
+              <div class="stat-label">Fast Search</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">Fast</div>
+              <div class="stat-label">Search Experience</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="explore-stat-favorites">0</div>
+              <div class="stat-label">Favorites Saved</div>
+            </div>
+          </div>
+
+          <div class="legendary-section">
+            <div class="trending-header-row">
+              <h3>Legendary Spotlight &gt;</h3>
+            </div>
+            <div id="legendary-spotlight-grid" class="grid"></div>
+          </div>
+        </div>
+
         <div id="loading" class="loading" hidden>
           <p>Loading Pokémon...</p>
         </div>
@@ -159,6 +220,7 @@
         <div id="no-results" class="no-results" hidden>
           <p>No Pokémon found matching your search criteria.</p>
         </div>
+        <div id="all-pokemon-anchor"></div>
         <div id="pokemon-grid" class="grid"></div>
       </section>
 
