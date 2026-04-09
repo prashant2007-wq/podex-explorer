@@ -1,8 +1,5 @@
 var LIMIT = 151;
 var CONCURRENCY = 12;
-
-
-
 var allPokemon = [];
 var favorites = [];
 var currentSelectedPokemon = null;
@@ -10,26 +7,20 @@ var currentFilter = "all";
 var currentSort = "id-asc";
 var searchTerm = "";
 var currentTab = "home";
-
-
-
 function $id(id) {
   return document.getElementById(id);
 }
-
 function capitalize(s) {
   if (!s) {
     return "";
   }
   return s[0].toUpperCase() + s.slice(1);
 }
-
 function typeBadges(types) {
   return types.map(function(type) {
     return capitalize(type);
   }).join(", ");
 }
-
 function formatPokeId(id) {
   var s = String(id);
   while (s.length < 3) {
@@ -37,9 +28,6 @@ function formatPokeId(id) {
   }
   return s;
 }
-
-
-
 function switchTab(tabName) {
   currentTab = tabName;
 
