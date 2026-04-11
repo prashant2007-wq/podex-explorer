@@ -1,6 +1,5 @@
 var LIMIT = 151;
 var CONCURRENCY = 12;
-
 var allPokemon = [];
 var favorites = [];
 var currentSelectedPokemon = null;
